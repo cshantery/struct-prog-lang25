@@ -21,5 +21,5 @@ while (x < 14) {
 };
 print x;
 print "Hello!";
-print "My dog is " / "Dorothy"
+print "My dog is " + "Dorothy"
 
