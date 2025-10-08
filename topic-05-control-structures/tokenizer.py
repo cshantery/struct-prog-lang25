@@ -3,6 +3,7 @@ import re
 # Define patterns for tokens
 patterns = [
     [r"print","print"],
+<<<<<<< Updated upstream
     [r"true","true"],
     [r"false","false"],
     [r"if","if"],
@@ -10,16 +11,28 @@ patterns = [
     [r"while","while"],
     [r"continue","continue"],
     [r"break","break"],
+=======
+    [r"cshanter", "cshanter"]
+    [r"true","true"],
+    [r"false","false"],
+>>>>>>> Stashed changes
     [r"\d*\.\d+|\d+\.\d*|\d+", "number"],
     [r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"],  # identifiers
     [r"\+", "+"],
     [r"\-", "-"],
     [r"\*", "*"],
     [r"\/", "/"],
+<<<<<<< Updated upstream
     [r"\(", "("],
     [r"\)", ")"],
     [r"\}", "}"],
     [r"\{", "{"],
+=======
+    [r"\{", "{"],
+    [r"\}", "}"],
+    [r"\(", "("],
+    [r"\)", ")"],
+>>>>>>> Stashed changes
     [r"\;", ";"],
     [r"\<\=", "<="],
     [r"\<", "<"],
@@ -85,8 +98,11 @@ def test_simple_token():
         [r"\(", "("],
         [r"\)", ")"],
         [r"\;", ";"],
+<<<<<<< Updated upstream
         [r"\}", "}"],
         [r"\{", "{"],
+=======
+>>>>>>> Stashed changes
         [r"\<\=", "<="],
         [r"\<", "<"],
         [r"\>\=", ">="],
@@ -140,7 +156,11 @@ def test_whitespace():
 def test_keywords():
     print("test keywords...")
     for keyword in [
+<<<<<<< Updated upstream
         "print","if","else","while","break","continue"
+=======
+        "print",
+>>>>>>> Stashed changes
     ]:
         t = tokenize(keyword)
         assert len(t) == 2
@@ -155,6 +175,23 @@ def test_identifier_tokens():
         assert t[0]["tag"] == "identifier"
         assert t[0]["value"] == s
 
+<<<<<<< Updated upstream
+=======
+def test_kent_id_token():
+    print("test kentID tokens....")
+    kent_id_string = "cshanter"
+    kent_id_tag = "cshanter"
+
+    t = tokenize(kent_id_string)
+    assert len(t) == 2  #check that its token plus end of line
+    token = t[0]        
+
+    assert t["tag"] == kent_id_tag  #assert that tag is tag i assigned
+    assert t["value"] == kent_id_string #assert that string is given string
+
+
+
+>>>>>>> Stashed changes
 
 
 def test_error():

@@ -3,6 +3,7 @@ print 3+3;
 print 4+4;
 y = 5;
 x = 6;
+<<<<<<< Updated upstream
 print x+y;
 if (1==1) { 
     print 2+2;
@@ -21,3 +22,6 @@ while (x < 14) {
 };
 print x
 
+=======
+print x+y
+>>>>>>> Stashed changes
