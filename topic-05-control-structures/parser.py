@@ -17,23 +17,14 @@ ebnf = """
     logical_expression = logical_term { "||" logical_term }
     expression = logical_expression
 
-<<<<<<< Updated upstream
     statement_block = "{" statement { ";" statement } "}"
 
     if_statement = "if" "(" expression ")" statement_block [ "else" statement_block ]
 
-    statement = <print> expression | expression { "=" expression } | statement_block | if _statement 
+    statement = <print> expression | <cshanter> |expression { "=" expression } | statement_block | if _statement 
     program = expression { ";" expression }
-=======
-    statement block = "{" statement {";" statement } "}"
 
-    statement = <print> expression | <cshanter> | expression { "=" expression }
-    program = expression { ";" expression }
-    
-   
->>>>>>> Stashed changes
 """
-
 
 def parse_factor(tokens):
     """
@@ -285,7 +276,6 @@ def test_parse_expression():
     ast2, _ = parse_logical_expression(tokenize("1+1"))
     assert ast1 == ast2
 
-<<<<<<< Updated upstream
 def parse_statement_block(tokens):
     """
     statement_block = "{" statement { ";" statement } "}"
@@ -397,15 +387,8 @@ def test_parse_while_statement():
 
 def parse_statement(tokens):
     """
-    statement = <print> expression | statement_block | expression { "=" expression } | if_statement | while_statement
+    statement = <print> expression | <cshanter> | statement_block | expression { "=" expression } | if_statement | while_statement
     """
-=======
-def parse_statement(tokens):
-    """
-    statement = <print> expression | <cshanter> | expression { "=" expression }
-    """
-    kent_id_tag = "cshanter"
->>>>>>> Stashed changes
     if tokens[0]["tag"] == "print":
         value_ast, tokens = parse_expression(tokens[1:])
         ast = {
@@ -413,7 +396,6 @@ def parse_statement(tokens):
             'value': value_ast
         }
         return ast, tokens
-<<<<<<< Updated upstream
     if tokens[0]["tag"] == "{":
         ast, tokens = parse_statement_block(tokens)
         return ast, tokens
@@ -423,13 +405,11 @@ def parse_statement(tokens):
     if tokens[0]["tag"] == "while":
         ast, tokens = parse_while_statement(tokens)
         return ast, tokens
-=======
-    elif tokens[0]["tag"] == kent_id_tag:
+    if tokens[0]["tag"] == kent_id_tag:
         ast ={
             'tag' : 'cshanter'
         }
         return ast, tokens[1:]
->>>>>>> Stashed changes
     else:
         ast, tokens = parse_expression(tokens)
         if tokens[0]["tag"] == "=":
@@ -456,7 +436,6 @@ def test_parse_statement():
     tokens = tokenize("x=3")
     ast, tokens = parse_statement(tokens)
     assert ast == {'tag': 'assign', 'target': {'tag': 'identifier', 'value': 'x'}, 'value': {'tag': 'number', 'value': 3}}
-<<<<<<< Updated upstream
         # statement block
     ast, _ = parse_statement(tokenize("{print 1}"))
     assert ast == {'tag': 'block', 'statements': [{'tag': 'print', 'value': {'tag': 'number', 'value': 1}}]}
@@ -469,8 +448,6 @@ def test_parse_statement():
     ast2, _ = parse_while_statement(tokens)
     assert ast1 == ast2
 
-=======
->>>>>>> Stashed changes
 
 def parse_program(tokens):
     """
@@ -526,12 +503,9 @@ if __name__ == "__main__":
     test_parse_logical_term()
     test_parse_logical_expression()
     test_parse_expression()
-<<<<<<< Updated upstream
     test_parse_statement_block()
     test_parse_if_statement()
     test_parse_while_statement()
-=======
->>>>>>> Stashed changes
     test_parse_statement()
     test_parse_program()
     test_parse()

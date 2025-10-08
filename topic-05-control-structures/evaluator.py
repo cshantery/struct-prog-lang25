@@ -12,21 +12,17 @@ def evaluate(ast, environment):
             value = evaluate(statement, environment)
             last_value = value
         return last_value
-<<<<<<< Updated upstream
-=======
     if ast["tag"] == "cshanter":
         kent_id_string = "cshanter"
         email_adress = f"{kent_id_string}@kent.edu"
         environment["_kentid_"] = email_adress
         return None
->>>>>>> Stashed changes
     if ast["tag"] == "print":
         value = evaluate(ast["value"], environment)
         s = str(value)
         printed_string = s
         print(s)
         return None
-<<<<<<< Updated upstream
     if ast["tag"] == "if":
         condition = evaluate(ast["condition"], environment)
         if condition:
@@ -44,18 +40,12 @@ def evaluate(ast, environment):
     if ast["tag"] == "block":
         for statement in ast["statements"]:
             value = evaluate(statement, environment)
-=======
->>>>>>> Stashed changes
     if ast["tag"] == "assign":
         target = ast["target"]
         assert target["tag"] == "identifier"
         value = evaluate(ast["value"], environment)
         environment[target["value"]] = value
-<<<<<<< Updated upstream
         return None
-=======
-        return None  
->>>>>>> Stashed changes
     if ast["tag"] == "number":
         return ast["value"]
     if ast["tag"] == "identifier":
@@ -211,7 +201,6 @@ def test_evaluate_assignment():
     eval("x=2", environment)
     assert environment["x"] == 2 
     assert environment["$parent"]["y"] == 44.0
-<<<<<<< Updated upstream
 
 
 def test_evaluate_statement_blocks():
@@ -239,7 +228,6 @@ def test_evaluate_while_statement():
     eval("while (x<4) {x = x + 1}", environment)
     assert environment["x"] == 4
     print(environment)
-=======
     exit(0)
 
 def test_evaluate_kent_id_statment():
@@ -260,7 +248,6 @@ def test_evaluate_kent_id_statment():
     assert printed_string == expected_email
 
 
->>>>>>> Stashed changes
 
 if __name__ == "__main__":
     test_evaluate_number()
@@ -273,12 +260,9 @@ if __name__ == "__main__":
     test_relational_expressions()
     test_evaluate_print()
     test_evaluate_assignment()
-<<<<<<< Updated upstream
     test_evaluate_statement_blocks()
     test_evaluate_if_statement()
     test_evaluate_while_statement()
-=======
     test_evaluate_kent_id_statment()
->>>>>>> Stashed changes
     print("done.")
 
