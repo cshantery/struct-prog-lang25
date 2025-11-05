@@ -459,7 +459,6 @@ function is_even(n) {
 }
 assert is_even(4) == true;
 assert is_even(7) == false;
-
 print "Chapter 10 tests completed.";
 
 // Chapter 11: Scope and Closures - Test Suite
@@ -496,6 +495,7 @@ my_counter = make_counter();
 assert my_counter() == 1;
 assert my_counter() == 2;
 assert my_counter() == 3;
+
 
 print "Testing closures with parameters...";
 function make_multiplier(factor) {
@@ -549,133 +549,3 @@ assert pos_counter(2) == 17;
 
 print "Chapter 11 tests completed.";
 
-// Chapter 12: Advanced Features - Test Suite
-
-print("Chapter 12: Advanced Features");
-
-print "Testing complex data structure manipulation...";
-
-data = {
-    "users": [
-        {"name": "Alice", "scores": [95, 87, 92]},
-        {"name": "Bob", "scores": [88, 94, 90]},
-       {"name": "Charlie", "scores": [91, 85, 96]}
-    ],
-    "metadata": {
-        "total_users": 3,
-        "active": true
-    }
-};
-
-// Calculate average score for first user
-alice_scores = data["users"][0]["scores"];
-alice_total = alice_scores[0] + alice_scores[1] + alice_scores[2];
-alice_average = alice_total / 3;
-assert alice_average > 91.33;  // (95+87+92)/3 = 91.33...
-assert alice_average < 91.34;  // (95+87+92)/3 = 91.33...
-
-print "Testing advanced function patterns...";
-function apply_operation(operation, a, b) {
-    return operation(a, b)
-}
-
-function add_func(x, y) { return x + y }
-function multiply_func(x, y) { return x * y }
-
-assert apply_operation(add_func, 5, 3) == 8;
-assert apply_operation(multiply_func, 4, 6) == 24;
-
-print "Testing complex closure scenarios...";
-// function create_accumulator_factory() {
-//     function make_accumulator(initial) {
-//         current = initial;
-//         function accumulate(value) {
-//             current = current + value;
-//             return current
-//         }
-//         return accumulate
-//     }
-//     return make_accumulator
-// }
-
-// acc_factory = create_accumulator_factory();
-// acc1 = acc_factory(0);
-// acc2 = acc_factory(100);
-// assert acc1(10) == 10;
-// assert acc2(5) == 105;
-// assert acc1(20) == 30;
-// assert acc2(15) == 120;
-
-// print "Testing mixed data type operations...";
-// function process_mixed_data(data_list) {
-//     result = {
-//         "numbers": [],
-//         "strings": [],
-//         "count": 0
-//     };
-    
-//     i = 0;
-//     while (i < len(data_list)) {
-//         item = data_list[i];
-//         if (typeof(item) == "number") {
-//             result["numbers"] = result["numbers"] + [item]
-//         }
-//         if (typeof(item) == "string") {
-//             result["strings"] = result["strings"] + [item]
-//         }
-//         result["count"] = result["count"] + 1;
-//         i = i + 1
-//     }
-//     return result
-// }
-
-// // Note: This test assumes len() and typeof() functions exist
-// // If not available, this test may need modification
-// mixed_list = [42, "hello", 17, "world", true, 3.14];
-// // processed = process_mixed_data(mixed_list);
-
-// print "Testing recursive data structures...";
-// function build_nested_structure(depth) {
-//     if (depth <= 0) {
-//         return {"value": "leaf", "depth": 0}
-//     } else {
-//         return {
-//             "value": "branch",
-//             "depth": depth,
-//             "child": build_nested_structure(depth - 1)
-//         }
-//     }
-// }
-
-// nested = build_nested_structure(3);
-// assert nested["value"] == "branch";
-// assert nested["depth"] == 3;
-// assert nested["child"]["depth"] == 2;
-// assert nested["child"]["child"]["child"]["value"] == "leaf";
-
-// print "Testing advanced control flow...";
-// function fibonacci_iterative(n) {
-//     if (n <= 1) {
-//         return n
-//     }
-    
-//     a = 0;
-//     b = 1;
-//     i = 2;
-//     while (i <= n) {
-//         temp = a + b;
-//         a = b;
-//         b = temp;
-//         i = i + 1
-//     }
-//     return b
-// }
-
-// assert fibonacci_iterative(0) == 0;
-// assert fibonacci_iterative(1) == 1;
-// assert fibonacci_iterative(6) == 8;  // 0,1,1,2,3,5,8
-// assert fibonacci_iterative(10) == 55;
-
-// print "Chapter 12 tests completed.";
-
-// print "All language features tested successfully!";

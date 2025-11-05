@@ -21,7 +21,7 @@ grammar = """
     complex_expression = simple_expression { ("[" expression "]") | ("." identifier) | "(" [ expression { "," expression } ] ")" }
 
     arithmetic_factor = complex_expression
-    arithmetic_term = arithmetic_factor { ("*" | "/") arithmetic_factor }
+    arithmetic_term = arithmetic_factor { ("*" | "/" | "%") arithmetic_factor }
     arithmetic_expression = arithmetic_term { ("+" | "-") arithmetic_term }
     relational_expression = arithmetic_expression { ("<" | ">" | "<=" | ">=" | "==" | "!=") arithmetic_expression }
     logical_factor = relational_expression
@@ -187,41 +187,41 @@ def test_parse_list():
     """
     list = "[" expression { "," expression } "]"
     """
-    # print("testing parse_list...")
-    # ast, tokens = parse_list(tokenize("[1,2,3]"))
-    # assert ast == {
-    #     "tag": "list",
-    #     "items": [
-    #         {"tag": "number", "value": 1},
-    #         {"tag": "number", "value": 2},
-    #         {"tag": "number", "value": 3},
-    #     ],
-    # }
-    # ast, tokens = parse_list(tokenize("[1,2,3,]"))
-    # assert ast == {
-    #     "tag": "list",
-    #     "items": [
-    #         {"tag": "number", "value": 1},
-    #         {"tag": "number", "value": 2},
-    #         {"tag": "number", "value": 3},
-    #     ],
-    # }
-    # ast, tokens = parse_list(tokenize("[1,2,3,[4,5]]"))
-    # assert ast == {
-    #     "tag": "list",
-    #     "items": [
-    #         {"tag": "number", "value": 1},
-    #         {"tag": "number", "value": 2},
-    #         {"tag": "number", "value": 3},
-    #         {
-    #             "tag": "list",
-    #             "items": [{"tag": "number", "value": 4}, {"tag": "number", "value": 5}],
-    #         },
-    #     ],
-    # }
+    print("testing parse_list...")
+    ast, tokens = parse_list(tokenize("[1,2,3]"))
+    assert ast == {
+        "tag": "list",
+        "items": [
+            {"tag": "number", "value": 1},
+            {"tag": "number", "value": 2},
+            {"tag": "number", "value": 3},
+        ],
+    }
+    ast, tokens = parse_list(tokenize("[1,2,3,]"))
+    assert ast == {
+        "tag": "list",
+        "items": [
+            {"tag": "number", "value": 1},
+            {"tag": "number", "value": 2},
+            {"tag": "number", "value": 3},
+        ],
+    }
+    ast, tokens = parse_list(tokenize("[1,2,3,[4,5]]"))
+    assert ast == {
+        "tag": "list",
+        "items": [
+            {"tag": "number", "value": 1},
+            {"tag": "number", "value": 2},
+            {"tag": "number", "value": 3},
+            {
+                "tag": "list",
+                "items": [{"tag": "number", "value": 4}, {"tag": "number", "value": 5}],
+            },
+        ],
+    }
 
-    # ast, tokens = parse_list(tokenize("[]"))
-    # assert ast == {"items": [], "tag": "list"}
+    ast, tokens = parse_list(tokenize("[]"))
+    assert ast == {"items": [], "tag": "list"}
 
     ast = parse(tokenize(
         """
@@ -346,6 +346,8 @@ def parse_function(tokens):
         assert (
             tokens[0]["tag"] == "identifier"
         ), f"Expected identifier at position {tokens[0]['position']}"
+        if "line" in tokens[0]:
+            del tokens[0]["line"]
         parameters.append(tokens[0])
         tokens = tokens[1:]
         while tokens[0]["tag"] == ",":
@@ -353,6 +355,8 @@ def parse_function(tokens):
             assert (
                 tokens[0]["tag"] == "identifier"
             ), f"Expected identifier at position {tokens[0]['position']}"
+            if "line" in tokens[0]:
+                del tokens[0]["line"]
             parameters.append(tokens[0])
             tokens = tokens[1:]
     assert tokens[0]["tag"] == ")", f"Expected ']' at position {tokens[0]['position']}"
@@ -553,10 +557,10 @@ def test_parse_arithmetic_factor():
 
 def parse_arithmetic_term(tokens):
     """
-    arithmetic_term = arithmetic_factor { ("*" | "/") arithmetic_factor }
+    arithmetic_term = arithmetic_factor { ("*" | "/" | "%") arithmetic_factor }
     """
     node, tokens = parse_arithmetic_factor(tokens)
-    while tokens[0]["tag"] in ["*", "/"]:
+    while tokens[0]["tag"] in ["*", "/", "%"]:
         tag = tokens[0]["tag"]
         next_node, tokens = parse_arithmetic_factor(tokens[1:])
         node = {"tag": tag, "left": node, "right": next_node}
@@ -565,7 +569,7 @@ def parse_arithmetic_term(tokens):
 
 def test_parse_arithmetic_term():
     """
-    arithmetic_term = arithmetic_factor { ("*" | "/") arithmetic_factor }
+    arithmetic_term = arithmetic_factor { ("*" | "/" | "%") arithmetic_factor }
     """
     print("testing parse_arithmetic_term...")
     ast, tokens = parse_arithmetic_term(tokenize("x"))
@@ -581,6 +585,13 @@ def test_parse_arithmetic_term():
     ast, tokens = parse_arithmetic_term(tokenize("x/y"))
     assert ast == {
         "tag": "/",
+        "left": {"tag": "identifier", "value": "x"},
+        "right": {"tag": "identifier", "value": "y"},
+    }
+
+    ast, tokens = parse_arithmetic_term(tokenize("x%y"))
+    assert ast == {
+        "tag": "%",
         "left": {"tag": "identifier", "value": "x"},
         "right": {"tag": "identifier", "value": "y"},
     }

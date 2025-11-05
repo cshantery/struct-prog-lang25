@@ -60,6 +60,7 @@ test_generated_tags = set()
 
 # The lex/tokenize function
 def tokenize(characters, generated_tags=test_generated_tags):
+    line = 1
     tokens = []
     position = 0
     while position < len(characters):
@@ -95,13 +96,20 @@ def tokenize(characters, generated_tags=test_generated_tags):
             token["value"] = True if value == "true" else False
 
         # append token to stream, skipping whitespace and comments
+        if tag == "whitespace":
+            for c in value:
+                if c == "\n":
+                    line = line + 1
+        
+        token["line"] = line
+
         if tag not in ["comment", "whitespace"]:
             tokens.append(token)
 
         # update position for next match
         position = match.end()
 
-    tokens.append({"tag": None, "position": position})
+    tokens.append({"tag": None, "position": position, "line":line})
     return tokens
 
 
@@ -134,6 +142,10 @@ def test_number_tokens():
         assert t[0]["tag"] == "number"
         assert t[0]["value"] == float(s)
 
+def remove_line_info(tokens):
+    for token in tokens.copy():
+        del token["line"]
+    return tokens
 
 def test_string_tokens():
     print("testing string tokens...")
@@ -182,19 +194,19 @@ def verify_same_tokens(a, b):
     def remove_position(tokens):
         for t in tokens:
             del t["position"]
-        return tokens 
+        return remove_line_info(tokens) 
     return remove_position(tokenize(a)) == remove_position(tokenize(b))
 
 
 def test_multiple_tokens():
     print("testing multiple tokens...")
-    assert tokenize("1+2") == [
+    assert remove_line_info(tokenize("1+2")) == [
         {"tag": "number", "value": 1, "position": 0},
         {"tag": "+", "position": 1},
         {"tag": "number", "value": 2, "position": 2},
         {"tag": None, "position": 3},
     ]
-    assert tokenize("1+2-3") == [
+    assert remove_line_info(tokenize("1+2-3")) == [
         {"tag": "number", "value": 1, "position": 0},
         {"tag": "+", "position": 1},
         {"tag": "number", "value": 2, "position": 2},
@@ -203,7 +215,7 @@ def test_multiple_tokens():
         {"tag": None, "position": 5},
     ]
 
-    assert tokenize("3+4*(5-2)") == [
+    assert remove_line_info(tokenize("3+4*(5-2)")) == [
         {"tag": "number", "value": 3, "position": 0},
         {"tag": "+",  "position": 1},
         {"tag": "number", "value": 4, "position": 2},
@@ -238,7 +250,7 @@ def test_keywords():
         "print",
         "exit",
     ]:
-        t = tokenize(keyword)
+        t = remove_line_info(tokenize(keyword))
         assert len(t) == 2
         assert t[0]["tag"] == keyword, f"expected {keyword}, got {t[0]}"
         assert "value" not in t
@@ -256,7 +268,7 @@ def test_comments():
 def test_error():
     print("testing token errors...")
     try:
-        t = tokenize("$banana")
+        t = remove_line_info(tokenize("$banana"))
         assert False, "Should have a token exception for '$$'."
     except Exception as e:
         error_string = str(e)
@@ -273,7 +285,7 @@ def test_tag_coverage():
 # Test for keyword followed by identifiers
 def test_if_identifier_sequence():
     print("testing keyword followed by identifiers...")
-    t = tokenize("if alpha beta")
+    t = remove_line_info(tokenize("if alpha beta"))
     tags = [tok["tag"] for tok in t[:-1]]
     assert tags == ["if", "identifier", "identifier"], f"got {tags}"
 
