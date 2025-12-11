@@ -6,11 +6,23 @@ from tokenizer import tokenize
 
 from parser import parse
 
-from evaluator import evaluate
+import evaluator 
 
 def main():
     environment = {}
     
+    watch = None
+    # skippin script name, arg 0
+    for arg in sys.argv[1:]:
+        # split up to find variable name
+        if arg.startswith("watch="):
+            #set the global variabl in evaluator.py
+            watch_var = arg.split("=", 1)[1]
+            evaluator.Watch_target = watch_var
+        else:
+            filename = arg
+
+
     # Check for command line arguments
     if len(sys.argv) > 1:
         # Filename provided, read and execute it
@@ -19,7 +31,7 @@ def main():
         try:
             tokens = tokenize(source_code)
             ast = parse(tokens)
-            final_value, exit_status = evaluate(ast, environment)
+            final_value, exit_status = evaluator.evaluate(ast, environment)
             if exit_status == "exit":
                 # print(f"Exiting with code: {final_value}") # Optional debug print
                 sys.exit(final_value if isinstance(final_value, int) else 0)

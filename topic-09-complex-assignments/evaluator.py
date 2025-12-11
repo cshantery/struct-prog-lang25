@@ -3,6 +3,10 @@ from parser import parse
 from pprint import pprint
 import copy
 
+debug = False
+Watch_target = None
+
+
 def type_of(*args):
     def single_type(x):
         if isinstance(x, bool):
@@ -523,6 +527,10 @@ def evaluate(ast, environment):
         if value_status == "exit": return value, "exit"
 
         target_base[target_index] = value
+
+        if Watch_target is not None and target_index == Watch_target:
+            line = ast.get("line", "unknown")
+            print(f"{target_index} changed to {value} at line {line}")
         return value, None
 
     if ast["tag"] == "return":

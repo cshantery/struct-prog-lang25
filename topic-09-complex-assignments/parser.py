@@ -60,7 +60,7 @@ def parse_simple_expression(tokens):
     token = tokens[0]
 
     if token["tag"] in {"identifier", "boolean", "number", "string"}:
-        return {"tag": token["tag"], "value": token["value"]}, tokens[1:]
+        return {"tag": token["tag"], "value": token["value"], "line": token["line"]}, tokens[1:]
     
     if token["tag"] == "null":
         return {"tag": "null"}, tokens[1:]
@@ -830,7 +830,7 @@ def parse_assignment_expression(tokens):
                 raise SyntaxError("extern can only be used with simple identifiers")
             left["extern"] = True
 
-        return {"tag": "assign", "target": left, "value": right}, tokens
+        return {"tag": "assign", "target": left, "value": right, "line": left.get("line")}, tokens
 
     # if no assignment occurred, extern must not be present
     assert not extern, "Can't use extern without assignment."
